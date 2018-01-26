@@ -13,22 +13,24 @@ Java –jar hangman.jar
 Client
 Start playing the game through the following url:
 http://localhost:8093/hangman.html
-(replace localhost with domain name if the server is accessible )
+
 
 
 DB Verification 
-You can access the MongoDB embedded server using  the Robo 3T MonogDB client tool
-DB details:
-DB port : 27018
-DB name : hangmanDB
-Test hangmanDB: hangmanDBTest
-Can be downloaded from the following link : https://robomongo.org/
-Note: As an embeddedDb is used the DB is deleted on restart.
+- You can access the MongoDB embedded server using  the Robo 3T MonogDB client tool
+	DB details:
+	DB port : 27018
+	DB name : hangmanDB
+- Test hangmanDB: hangmanDBTest
+- Can be downloaded from the following link : https://robomongo.org/
+- Note: As an embeddedDb is used the DB is deleted on restart.
 
 Implementation Details
-This project is implemented using Spring Boot framework 
-Server side implementation provides REST APIs to play the game
-Client side implemented using HTML and Javascript .
-Data is persisted in the Embedded Mongo DB instance.
-Junit and Mockito frameworks are used for testing
+-	This project is implemented using Spring Boot framework 
+-	Server side implementation provides REST APIs to play the game
+- Client side implemented using HTML and Javascript .
+- Data is persisted in the Embedded Mongo DB instance.
+- Junit and Mockito frameworks are used for testing
+
+
 
