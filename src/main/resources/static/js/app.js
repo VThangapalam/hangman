@@ -1,8 +1,5 @@
 var base_url = "http://localhost:8093";
-function init() {
-    storeWrongGuess(0);
-
-}
+var isRefreshed = false;
 
 
 function startPlay() {
@@ -10,14 +7,11 @@ function startPlay() {
     y.style.display = "block";
     var x = document.getElementById("canvasDiv");
     x.style.display = "block";
-
     var startButton = document.getElementById("startButton");
     startButton.style.display = "none";
-
     var xhr = new XMLHttpRequest();
     xhr.open('GET', base_url + "/game/getGameId", true);
     xhr.send();
-
     xhr.onreadystatechange = processRequest;
 
     function processRequest(e) {
@@ -29,17 +23,16 @@ function startPlay() {
         }
     }
 
-
+    listenToKeys();
 }
 
 
 function clickedAlpha(alpha) {
     var xhr = new XMLHttpRequest();
     var gameId = getGameId();
-
-    xhr.open('GET', base_url + "/game/" + gameId + "/guess/" + alpha.value, true);
+    //console.log("game id ********* " + gameId);
+    xhr.open('GET', base_url + "/game/" + gameId + "/guess/" + alpha, true);
     xhr.send();
-
     xhr.onreadystatechange = processRequest;
 
     function processRequest(e) {
@@ -50,51 +43,43 @@ function clickedAlpha(alpha) {
             var wordGuess = response.wordGuessed;
             storeWordGuessed(response.wordGuessed);
             showWordSpace();
-
             //correct guess
-            var guessStr = alpha.value.toString();
+            var guessStr = alpha.toString();
             if (wordGuess.indexOf("_") == -1)
             {
 
                 document.getElementById("resultMessage").innerHTML = "Won Game!";
                 var nextButton = document.getElementById("nextButton");
                 nextButton.style.display = "block";
-
                 styleCorrectGuess(guessStr);
-                updateWonGames(response.numberOfGamesWon);
+                storeGamesWon(response.numberOfGamesWon);
+                updateWonGames();
                 $('#alphabhetDiv').block({message: null});
-
+                disableKeyPressed();
             } else {
-
                 if (currWrong > prevWrong) {
-
-                    
                     styleWrongGuess(guessStr);
                     storeWrongGuess(currWrong);
                     drawCanvas(currWrong);
                     if (currWrong == 10) {
-                        updateLostGames(response.numberOfGamesLost);
+                        storeGamesLost(response.numberOfGamesLost);
+                        updateLostGames();
                         document.getElementById("resultMessage").innerHTML = "Lost Game!";
                         //alert("Game Lost !!!");
                         $('#alphabhetDiv').block({message: null});
                         var nextButton = document.getElementById("nextButton");
                         nextButton.style.display = "block";
+                        disableKeyPressed();
                     }
                 } else {
                     //correct guess
-                    var guessStr = alpha.value.toString();
+                    var guessStr = alpha.toString();
                     styleCorrectGuess(guessStr);
                 }
-
-
             }//else
 
         } //if status
-
-
     } //inner func
-
-
 } // func
 
 
@@ -103,16 +88,13 @@ function createAlphaButton() {
     var y = document.getElementById("alphabhetDiv");
     for (var i = 0; i < alphabet.length; i++) {
         var currChar = alphabet.charAt(i);
-        y.innerHTML += '<input type="button" class="btn btn-primary" onclick="clickedAlpha(this)" name="' + currChar + '" value="' + currChar + '">';
-     }
+        y.innerHTML += '<input type="button" class="btn btn-primary" onclick="clickedAlpha(this.value)" name="' + currChar + '" value="' + currChar + '">';
+    }
 }
 
 function drawCanvas(wrongGuess) {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-
-
-
     switch (wrongGuess) {
         case 1:
             //line 1
@@ -183,15 +165,13 @@ function drawCanvas(wrongGuess) {
             ctx.lineTo(85, 75);
             ctx.stroke();
             break;
-
     }
-
 }
 
 
 function showWordSpace() {
     var wordGuess = getWordGuessed();
-    console.log("word to be gues " + wordGuess);
+    //console.log("word to be gues " + wordGuess);
     var word = "";
     var len = wordGuess.length;
     for (i = 0; i <= len; i++) {
@@ -200,7 +180,6 @@ function showWordSpace() {
             word = word + " ";
         }
     }
-
     document.getElementById("wordPara").innerHTML = word;
 }
 
@@ -223,27 +202,43 @@ function getWordGuessed() {
 
 function storeWrongGuess(wrongGuessNumber) {
     sessionStorage.setItem("wrongGuess", wrongGuessNumber);
+
 }
 
 function getWrongGuess() {
     return sessionStorage.getItem("wrongGuess");
 }
 
-function updateWonGames(won) {
-    document.getElementById("wonCnt").innerHTML = "Won: " + won;
+
+function storeGamesLost(lost) {
+    sessionStorage.setItem("lostNum", lost);
 }
 
-function updateLostGames(lost) {
-    document.getElementById("lostCnt").innerHTML = "Lost: " + lost;
+function storeGamesWon(won) {
+    sessionStorage.setItem("wonNum", won);
+}
+
+function updateWonGames() {
+    var val = sessionStorage.getItem("wonNum");
+    if (val == null) {
+        val = 0;
+    }
+    document.getElementById("wonCnt").innerHTML = "Won: " + val;
+}
+
+function updateLostGames() {
+    var val = sessionStorage.getItem("lostNum");
+    if (val == null) {
+        val = 0;
+    }
+    document.getElementById("lostCnt").innerHTML = "Lost: " + val;
 }
 
 function clearCanvas() {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
 }
-
 
 function resetWord() {
     storeWrongGuess(0);
@@ -252,12 +247,14 @@ function resetWord() {
     var alpDiv = document.getElementById("alphabhetDiv");
     while (alpDiv.hasChildNodes()) {
         alpDiv.removeChild(alpDiv.lastChild);
-        var nextButton = document.getElementById("nextButton");
-        nextButton.style.display = "none";
-        document.getElementById("resultMessage").innerHTML = "";
     }
-   createAlphaButton();
+    createAlphaButton();
     clearCanvas();
+    var nextButton = document.getElementById("nextButton");
+    nextButton.style.display = "none";
+    document.getElementById("resultMessage").innerHTML = "";
+    updateWonGames();
+    updateLostGames();
 }
 function newWord() {
 
@@ -272,12 +269,12 @@ function newWord() {
     function processRequest(e) {
         if (xhr.readyState == 4 && xhr.status == 200) {
             var response = JSON.parse(xhr.responseText);
-            console.log(response);
             storeGameId(response.gameId);
             storeWordGuessed(response.wordGuessed);
             showWordSpace();
         }
     }
+    listenToKeys();
 }
 
 function styleCorrectGuess(guess) {
@@ -289,7 +286,6 @@ function styleCorrectGuess(guess) {
             btnClicked.disabled = true;
             break;
         }
-
     }
 }
 
@@ -314,4 +310,93 @@ function hideAlphaDiv() {
 function showAlphaDiv() {
     var alp = document.getElementById("alphabhetDiv");
     alp.style.display = "block";
+}
+
+function listenToKeys() {
+    window.addEventListener("keyup", checkKeyPressed);
+    function checkKeyPressed(e) {
+        if (event.keyCode >= 65 && event.keyCode <= 90) {
+            // Alphabet upper case
+            var x = event.keyCode;
+            var y = String.fromCharCode(x).toLowerCase();
+            clickedAlpha(y);
+        } else if (event.keyCode >= 97 && event.keyCode <= 122) {
+            // Alphabet lower case
+            var x = event.keyCode;
+            var y = String.fromCharCode(x);
+            clickedAlpha(y);
+        } else {
+
+            //console.log("invalid key");
+        }
+    }
+}
+
+
+function disableKeyPressed() {
+    //console.log("disabled keys");
+    $('*').off('keyup keydown keypress');
+}
+
+function detectPageRefresh() {
+    //check for navigation time API support
+    if (window.performance) {
+        // console.info("window.performance work's fine on this browser");
+    }
+    if (performance.navigation.type == 1) {
+        // console.info("This page is reloaded");
+
+        if (getGameId() != null) {
+            var y = document.getElementById("wordDiv");
+            y.style.display = "block";
+            var x = document.getElementById("canvasDiv");
+            x.style.display = "block";
+            var startButton = document.getElementById("startButton");
+            startButton.style.display = "none";
+            reloadGame();
+            updateWonGames();
+            updateLostGames();
+        }
+
+    } else {
+        //console.info("This page is not reloaded");
+    }
+}
+
+function reloadGame() {
+    var gameId = getGameId();
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', base_url + "/game/" + gameId, true);
+    xhr.send();
+    xhr.onreadystatechange = processRequest;
+
+    function processRequest(e) {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+            var guess = response.wordGuessed;
+            storeWordGuessed(guess);
+            showWordSpace();
+            listenToKeys();
+            var correct = response.lettersGuessedCorrectly;
+            var len = correct.length;
+            for (var i = 0; i < len; i++) {
+                styleCorrectGuess(correct[i]);
+            }
+            var incorrect = response.lettersGuessedIncorrectly;
+            len = incorrect.length;
+            for (var i = 0; i < len; i++) {
+                styleWrongGuess(incorrect[i]);
+                var j = i + 1;
+                drawCanvas(j);
+            }
+
+            if (guess.indexOf("_") == -1 || response.numberOfWrongGuess >= 10)
+            {
+                var nextButton = document.getElementById("nextButton");
+                nextButton.style.display = "block";
+                $('#alphabhetDiv').block({message: null});
+                disableKeyPressed();
+            }
+        }
+    }
 }

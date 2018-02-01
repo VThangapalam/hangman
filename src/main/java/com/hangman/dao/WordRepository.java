@@ -6,13 +6,12 @@
 package com.hangman.dao;
 
 import com.hangman.entity.Word;
-import java.io.Serializable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author roger
  */
-public interface WordRepository extends MongoRepository<Word, Integer>{
-    
+public interface WordRepository extends MongoRepository<Word, Integer> {
+
 }

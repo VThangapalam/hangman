@@ -7,7 +7,6 @@ package com.hangman.service;
 
 import com.hangman.entity.Game;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  *
@@ -15,9 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @Service
 public interface GameService {
- public void create(Game game );
- public Game read(String id);
-  public void update(Game game);
-  public void delete(String id);
-    
+
+    public void create(Game game);
+
+    public Game read(String id);
+
+    public void update(Game game);
+
+    public void delete(String id);
+
 }

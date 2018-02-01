@@ -15,31 +15,33 @@ import org.springframework.stereotype.Service;
  * @author roger
  */
 @Service
-public class WordServiceImpl implements WordService{
-@Autowired
-WordRepository wordRepository;
+public class WordServiceImpl implements WordService {
+
+    @Autowired
+    WordRepository wordRepository;
 
     public WordServiceImpl(WordRepository wordRepo) {
-       this.wordRepository =  wordRepo;      
+        this.wordRepository = wordRepo;
     }
+
     @Override
     public void create(Word word) {
-       wordRepository.save(word);
+        wordRepository.save(word);
     }
 
     @Override
     public Word read(int id) {
-     return wordRepository.findOne(id);
+        return wordRepository.findOne(id);
     }
 
     @Override
     public void update(Word word) {
-       wordRepository.save(word);
+        wordRepository.save(word);
     }
 
     @Override
     public void delete(int id) {
-         wordRepository.delete(id);
-         }
-    
+        wordRepository.delete(id);
+    }
+
 }

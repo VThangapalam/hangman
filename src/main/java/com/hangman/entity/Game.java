@@ -17,10 +17,58 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 public class Game {
+
     @Id
     private String gameId;
 
     private int wordId;
+    private int wordSize;
+    private Date startTime;
+    private Date lastUpdatedTime;
+    private int numberOfGamesWon;
+    private int numberOfGamesLost;
+    private int numberOfWrongGuess;
+    private ArrayList<Character> lettersGuessedCorrectly;
+    private ArrayList<Character> lettersGuessedIncorrectly;
+    private String wordGuessed;
+
+    public Game() {
+
+    }
+
+    public Game(String gameId, int wordId, int wordSize, int won, int lost, Date start, Date updated) {
+        this.gameId = gameId;
+        this.wordId = wordId;
+        this.wordSize = wordSize;
+        this.numberOfGamesLost = lost;
+        this.numberOfGamesWon = won;
+        this.wordGuessed = "";
+        this.lettersGuessedCorrectly = new ArrayList<>();
+        this.lettersGuessedIncorrectly = new ArrayList<>();
+        char[] chars = new char[wordSize];
+        Arrays.fill(chars, '_');
+        this.wordGuessed = new String(chars);
+        this.numberOfWrongGuess = 0;
+        this.startTime = start;
+        this.lastUpdatedTime = updated;
+    }
+
+    public Game(String gameId, int wordId, int wordSize) {
+        this.gameId = gameId;
+        this.wordId = wordId;
+        this.wordSize = wordSize;
+        this.numberOfGamesLost = 0;
+        this.numberOfGamesWon = 0;
+        this.wordGuessed = "";
+        this.lettersGuessedCorrectly = new ArrayList<>();
+        this.lettersGuessedIncorrectly = new ArrayList<>();
+        char[] chars = new char[wordSize];
+        Arrays.fill(chars, '_');
+        this.wordGuessed = new String(chars);
+        this.numberOfWrongGuess = 0;
+        this.startTime = new Date();
+
+    }
 
     public Date getLastUpdatedTime() {
         return lastUpdatedTime;
@@ -29,9 +77,7 @@ public class Game {
     public void setLastUpdatedTime(Date lastUpdatedTime) {
         this.lastUpdatedTime = lastUpdatedTime;
     }
-    private int wordSize;
-    private Date startTime;
-    private Date lastUpdatedTime;
+
     public Date getStartTime() {
         return startTime;
     }
@@ -55,11 +101,6 @@ public class Game {
     public void setWordSize(int wordSize) {
         this.wordSize = wordSize;
     }
-    private int numberOfGamesWon;
-    private int numberOfGamesLost;
-    private int numberOfWrongGuess;
-    private ArrayList<Character> lettersGuessedCorrectly;
-    private ArrayList<Character> lettersGuessedIncorrectly;
 
     public ArrayList<Character> getLettersGuessedIncorrectly() {
         return lettersGuessedIncorrectly;
@@ -68,51 +109,10 @@ public class Game {
     public void setLettersGuessedIncorrectly(ArrayList<Character> lettersGuessedIncorrectly) {
         this.lettersGuessedIncorrectly = lettersGuessedIncorrectly;
     }
-    private String wordGuessed;
-    
+
     public String getGameId() {
         return gameId;
     }
-
-    public Game(String gameId, int wordId,int wordSize) {
-        this.gameId = gameId;
-        this.wordId = wordId;
-        this.wordSize=wordSize;
-        this.numberOfGamesLost=0;
-        this.numberOfGamesWon=0;
-        this.wordGuessed="";
-        this.lettersGuessedCorrectly = new ArrayList<>();
-        this.lettersGuessedIncorrectly = new ArrayList<>();
-        char[] chars = new char[wordSize];
-        Arrays.fill(chars, '_');
-        this.wordGuessed = new String(chars);
-        this.numberOfWrongGuess = 0;
-        this.startTime = new Date();
-        
-       
-    }
-    
-    public Game() {
-        
-    }
-    
-    public Game(String gameId, int wordId,int wordSize,int won, int lost,Date start,Date updated) {
-        this.gameId = gameId;
-        this.wordId = wordId;
-        this.wordSize=wordSize;
-        this.numberOfGamesLost=lost;
-        this.numberOfGamesWon=won;
-        this.wordGuessed="";
-        this.lettersGuessedCorrectly = new ArrayList<>();
-        this.lettersGuessedIncorrectly = new ArrayList<>();
-        char[] chars = new char[wordSize];
-        Arrays.fill(chars, '_');
-        this.wordGuessed = new String(chars);
-        this.numberOfWrongGuess = 0;
-        this.startTime = start;
-        this.lastUpdatedTime = updated;
-    }
-    
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
@@ -158,5 +158,4 @@ public class Game {
         this.wordGuessed = wordGuessed;
     }
 
-       
 }

@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document
 public class Word {
+
     @Id
     private int wordId;
     private String word;
@@ -25,8 +26,9 @@ public class Word {
     public void setWordId(int wordId) {
         this.wordId = wordId;
     }
+
     public Word() {
-        
+
     }
 
     public Word(int wordId, String word) {
@@ -41,5 +43,5 @@ public class Word {
     public void setWord(String word) {
         this.word = word;
     }
-    
+
 }

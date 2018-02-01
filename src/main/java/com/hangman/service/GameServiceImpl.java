@@ -6,7 +6,6 @@
 package com.hangman.service;
 
 import com.hangman.dao.GameRepository;
-import com.hangman.dao.WordRepository;
 import com.hangman.entity.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,30 +15,29 @@ import org.springframework.stereotype.Service;
  * @author roger
  */
 @Service
-public class GameServiceImpl implements GameService{
-@Autowired
-GameRepository gameRepository;
+public class GameServiceImpl implements GameService {
+
+    @Autowired
+    GameRepository gameRepository;
 
     public GameServiceImpl(GameRepository gameRepo) {
         this.gameRepository = gameRepo;
-                }
+    }
 
- 
+    public void create(Game game) {
+        gameRepository.save(game);
+    }
 
-                public void create(Game game ) {
-                   gameRepository.save(game);      
-                }
+    public Game read(String id) {
+        return gameRepository.findOne(id);
+    }
 
-                public Game read(String id) {
-                    return gameRepository.findOne(id);
-                }
+    public void update(Game game) {
+        gameRepository.save(game);
+    }
 
-                    public void update(Game game) {
-                    gameRepository.save(game); 
-                }
+    public void delete(String id) {
+        gameRepository.delete(id);
+    }
 
-                        public void delete(String id) {
-                     gameRepository.delete(id);
-                }
-    
 }

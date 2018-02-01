@@ -14,9 +14,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface WordService {
- public void create(Word game );
- public Word read(int id);
-  public void update(Word game);
-  public void delete(int id);
-    
+
+    public void create(Word game);
+
+    public Word read(int id);
+
+    public void update(Word game);
+
+    public void delete(int id);
+
 }
